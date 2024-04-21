@@ -28,12 +28,18 @@ function getCountryByIP() {
     fetch('https://get.geojs.io/v1/ip/geo.json')
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             const country = data.country;
-            document.getElementById('countryName').textContent = country;
+            setDefaultCountry(country);
         })
         .catch(error => {
             console.error('Błąd pobierania danych z serwera GeoJS:', error);
         });
+}
+
+function setDefaultCountry(countryName) {
+    const countryInputDatalist = document.getElementById('countryinput');
+    countryInputDatalist.setAttribute('value', countryName);
 }
 
 function getCountryCode() {
@@ -59,6 +65,21 @@ function getCountryCode() {
 (() => {
     // nasłuchiwania na zdarzenie kliknięcia myszką
     document.addEventListener('click', handleClick);
-    
+    getCountryByIP();
     fetchAndFillCountries();
 })()
+
+
+function handleKeyDown(event) {
+    // Sprawdzenie, czy naciśnięty klawisz to Enter (kod 13)
+    if (event.keyCode === 13) {
+        // Sprawdzenie, czy aktywny element to pole tekstowe lub pole wyboru
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'TEXTAREA') {
+            // Wysłanie formularza
+            document.getElementById('form').submit();
+        }
+    }
+}
+
+// Dodanie nasłuchiwania zdarzenia keydown na całym dokumencie
+document.addEventListener('keydown', handleKeyDown);
